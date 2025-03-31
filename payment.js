@@ -178,15 +178,17 @@ const updatePaymentButton = async (paymentMethod) => {
             });
         })
         .mount('#button-container');
-    } else if (paymentMethod === 'paypal') {
-        const paypalButton = document.createElement('button');
-        paypalButton.className = 'paypal-button';
-        paypalButton.textContent = 'Continue with PayPal';
-        paypalButton.addEventListener('click', () => {
-            console.log('PayPal payment initiated');
-            // Add your PayPal payment logic here
+    } else if (paymentMethod === 'credit-card') {
+        const creditCardButton = document.createElement('button');
+        creditCardButton.className = 'credit-card-button';
+        creditCardButton.textContent = 'Pay with Credit Card';
+        creditCardButton.addEventListener('click', () => {
+            console.log('Credit card payment initiated');
+            const settings = getCurrentSettings();
+            alert(`Credit card payment initiated for ${(settings.amount / 100).toFixed(2)} ${settings.currency}`);
+            // Add your credit card payment logic here
         });
-        buttonContainer.appendChild(paypalButton);
+        buttonContainer.appendChild(creditCardButton);
     }
 };
 

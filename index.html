@@ -38,6 +38,43 @@
         body {
             margin-bottom: 200px; /* Add space for console */
         }
+        #button-container button,
+        .credit-card-button {
+            background-color: var(--google-blue);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0 24px;
+            height: 36px;
+            font-family: 'Google Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.25px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            width: auto;
+            min-width: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #button-container button:hover,
+        .credit-card-button:hover {
+            background-color: var(--google-blue-hover);
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+        }
+        #button-container button:active,
+        .credit-card-button:active {
+            background-color: var(--google-blue-hover);
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
+        }
+        .credit-card-button {
+            background-color: #1a73e8;
+        }
+        .credit-card-button:hover,
+        .credit-card-button:active {
+            background-color: #1557b0;
+        }
     </style>
 </head>
 <body>
@@ -294,12 +331,17 @@
                 </div>
             </div>
 
-            <!-- PayPal Payment Option -->
+            <!-- Credit Cards Payment Option -->
             <div class="payment-option selected" tabindex="0" role="radio">
-                <input type="radio" name="payment-method" value="paypal" class="radio-input" checked>
-                <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" alt="PayPal" class="payment-icon">
-                <div class="content-wrapper" style="padding-top: 0; justify-content: center;">
-                    <div style="font-size: 16px; font-weight: 500;">PayPal</div>
+                <input type="radio" name="payment-method" value="credit-card" class="radio-input" checked>
+                <div class="content-wrapper">
+                    <div style="font-size: 16px; font-weight: 500;">Credit Cards</div>
+                </div>
+                <div style="display: flex; gap: 12px; margin-left: auto; align-items: center;">
+                    <img src="https://js.stripe.com/v3/fingerprinted/img/visa-365725566f9578a9589553aa9296d178.svg" alt="Visa" style="height: 16px;">
+                    <img src="https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg" alt="Mastercard" style="height: 16px;">
+                    <img src="https://js.stripe.com/v3/fingerprinted/img/amex-a49b82f46c5cd6a96a6e418a6ca1717c.svg" alt="American Express" style="height: 16px;">
+                    <img src="https://js.stripe.com/v3/fingerprinted/img/discover-ac52cd46f89fa40a29a0bfb954e33173.svg" alt="Discover" style="height: 16px;">
                 </div>
             </div>
         </div>
