@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klarna Payment Integration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Settings Panel -->
+    <div class="settings-panel">
+        <button class="settings-toggle">⚙️ SDK Settings</button>
+        <div class="settings-content">
+            <h3>Klarna SDK Settings</h3>
+            <div class="settings-group">
+                <label for="locale">Locale:</label>
+                <div class="select-with-custom">
+                    <select id="locale">
+                        <optgroup label="Australia">
+                            <option value="en-AU">English (AU)</option>
+                        </optgroup>
+                        <optgroup label="Austria">
+                            <option value="de-AT">German (AT)</option>
+                            <option value="en-AT">English (AT)</option>
+                        </optgroup>
+                        <optgroup label="Belgium">
+                            <option value="nl-BE">Dutch (BE)</option>
+                            <option value="fr-BE">French (BE)</option>
+                            <option value="en-BE">English (BE)</option>
+                        </optgroup>
+                        <optgroup label="Canada">
+                            <option value="en-CA">English (CA)</option>
+                            <option value="fr-CA">French (CA)</option>
+                        </optgroup>
+                        <optgroup label="Czech Republic">
+                            <option value="cs-CZ">Czech (CZ)</option>
+                            <option value="en-CZ">English (CZ)</option>
+                        </optgroup>
+                        <optgroup label="Denmark">
+                            <option value="da-DK">Danish (DK)</option>
+                            <option value="en-DK">English (DK)</option>
+                        </optgroup>
+                        <optgroup label="Finland">
+                            <option value="fi-FI">Finnish (FI)</option>
+                            <option value="sv-FI">Swedish (FI)</option>
+                            <option value="en-FI">English (FI)</option>
+                        </optgroup>
+                        <optgroup label="France">
+                            <option value="fr-FR">French (FR)</option>
+                            <option value="en-FR">English (FR)</option>
+                        </optgroup>
+                        <optgroup label="Germany">
+                            <option value="de-DE">German (DE)</option>
+                            <option value="en-DE">English (DE)</option>
+                        </optgroup>
+                        <optgroup label="Greece">
+                            <option value="el-GR">Greek (GR)</option>
+                            <option value="en-GR">English (GR)</option>
+                        </optgroup>
+                        <optgroup label="Hungary">
+                            <option value="hu-HU">Hungarian (HU)</option>
+                            <option value="en-HU">English (HU)</option>
+                        </optgroup>
+                        <optgroup label="Ireland">
+                            <option value="en-IE">English (IE)</option>
+                        </optgroup>
+                        <optgroup label="Italy">
+                            <option value="it-IT">Italian (IT)</option>
+                            <option value="en-IT">English (IT)</option>
+                        </optgroup>
+                        <optgroup label="Mexico">
+                            <option value="es-MX">Spanish (MX)</option>
+                            <option value="en-MX">English (MX)</option>
+                        </optgroup>
+                        <optgroup label="Netherlands">
+                            <option value="nl-NL">Dutch (NL)</option>
+                            <option value="en-NL">English (NL)</option>
+                        </optgroup>
+                        <optgroup label="New Zealand">
+                            <option value="en-NZ">English (NZ)</option>
+                        </optgroup>
+                        <optgroup label="Norway">
+                            <option value="nb-NO">Norwegian (NO)</option>
+                            <option value="en-NO">English (NO)</option>
+                        </optgroup>
+                        <optgroup label="Poland">
+                            <option value="pl-PL">Polish (PL)</option>
+                            <option value="en-PL">English (PL)</option>
+                        </optgroup>
+                        <optgroup label="Portugal">
+                            <option value="pt-PT">Portuguese (PT)</option>
+                            <option value="en-PT">English (PT)</option>
+                        </optgroup>
+                        <optgroup label="Romania">
+                            <option value="ro-RO">Romanian (RO)</option>
+                            <option value="en-RO">English (RO)</option>
+                        </optgroup>
+                        <optgroup label="Slovakia">
+                            <option value="sk-SK">Slovak (SK)</option>
+                            <option value="en-SK">English (SK)</option>
+                        </optgroup>
+                        <optgroup label="Spain">
+                            <option value="es-ES">Spanish (ES)</option>
+                            <option value="en-ES">English (ES)</option>
+                        </optgroup>
+                        <optgroup label="Sweden">
+                            <option value="sv-SE">Swedish (SE)</option>
+                            <option value="en-SE">English (SE)</option>
+                        </optgroup>
+                        <optgroup label="Switzerland">
+                            <option value="de-CH">German (CH)</option>
+                            <option value="fr-CH">French (CH)</option>
+                            <option value="it-CH">Italian (CH)</option>
+                            <option value="en-CH">English (CH)</option>
+                        </optgroup>
+                        <optgroup label="United Kingdom">
+                            <option value="en-GB">English (GB)</option>
+                        </optgroup>
+                        <optgroup label="United States">
+                            <option value="en-US" selected>English (US)</option>
+                            <option value="es-US">Spanish (US)</option>
+                        </optgroup>
+                    </select>
+                    <div class="custom-input">
+                        <input type="text" id="custom-locale" placeholder="Custom locale (e.g. en-US)">
+                        <button class="use-custom" data-for="locale">Use Custom</button>
+                    </div>
+                </div>
+            </div>
+            <div class="settings-group">
+                <label for="currency">Currency:</label>
+                <div class="select-with-custom">
+                    <select id="currency">
+                        <option value="AUD">Australian Dollar (AUD)</option>
+                        <option value="EUR">Euro (EUR)</option>
+                        <option value="CAD">Canadian Dollar (CAD)</option>
+                        <option value="CZK">Czech Koruna (CZK)</option>
+                        <option value="DKK">Danish Krone (DKK)</option>
+                        <option value="HUF">Hungarian Forint (HUF)</option>
+                        <option value="MXN">Mexican Peso (MXN)</option>
+                        <option value="NZD">New Zealand Dollar (NZD)</option>
+                        <option value="NOK">Norwegian Krone (NOK)</option>
+                        <option value="PLN">Polish Złoty (PLN)</option>
+                        <option value="RON">Romanian Leu (RON)</option>
+                        <option value="SEK">Swedish Krona (SEK)</option>
+                        <option value="CHF">Swiss Franc (CHF)</option>
+                        <option value="GBP">British Pound (GBP)</option>
+                        <option value="USD" selected>US Dollar (USD)</option>
+                    </select>
+                    <div class="custom-input">
+                        <input type="text" id="custom-currency" placeholder="Custom currency (e.g. USD)">
+                        <button class="use-custom" data-for="currency">Use Custom</button>
+                    </div>
+                </div>
+            </div>
+            <div class="settings-group">
+                <label for="amount">Amount:</label>
+                <input type="number" id="amount" value="11800" min="0" step="100">
+            </div>
+            <div class="settings-group">
+                <label>Requests:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="requests" value="HEADER" checked> HEADER</label>
+                    <label><input type="checkbox" name="requests" value="SUBHEADER" checked> SUBHEADER</label>
+                    <label><input type="checkbox" name="requests" value="ICON" checked> ICON</label>
+                    <label><input type="checkbox" name="requests" value="BUTTON" checked> BUTTON</label>
+                </div>
+            </div>
+            <div class="settings-group">
+                <label>Button Configuration:</label>
+                <div class="button-config">
+                    <div class="settings-row">
+                        <label for="button-label">Label:</label>
+                        <select id="button-label">
+                            <option value="pay" selected>Pay</option>
+                            <option value="checkout">Checkout</option>
+                            <option value="continue">Continue</option>
+                            <option value="connect">Connect</option>
+                            <option value="donate">Donate</option>
+                            <option value="signin">Sign In</option>
+                            <option value="signup">Sign Up</option>
+                            <option value="subscribe">Subscribe</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <label for="button-shape">Shape:</label>
+                        <select id="button-shape">
+                            <option value="default" selected>Default</option>
+                            <option value="rect">Rectangle</option>
+                            <option value="pill">Pill</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <label for="button-theme">Theme:</label>
+                        <select id="button-theme">
+                            <option value="default">Default</option>
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="outlined">Outlined</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <label for="button-logo-alignment">Logo Alignment:</label>
+                        <select id="button-logo-alignment">
+                            <option value="default" selected>Default</option>
+                            <option value="left">Left</option>
+                            <option value="center">Center</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <label for="button-id">Button ID:</label>
+                        <input type="text" id="button-id" placeholder="Custom button ID">
+                    </div>
+                </div>
+            </div>
+            <button id="apply-settings" class="apply-button">Apply Settings</button>
+        </div>
+    </div>
+    
+    <div class="payment-container">
+        <h2>Select Payment Method</h2>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--highlight-icon); border: 1px solid #FF5722;"></div>
+                <span>Icon Element</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--highlight-header); border: 1px solid #4CAF50;"></div>
+                <span>Header Element</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--highlight-subheader); border: 1px solid #2196F3;"></div>
+                <span>Subheader Element</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--highlight-button); border: 1px solid #9C27B0;"></div>
+                <span>Button Element</span>
+            </div>
+        </div>
+
+        <div class="payment-selector">
+            <!-- Klarna Payment Option -->
+            <div id="klarna-container" class="payment-option" tabindex="0" role="radio">
+                <input type="radio" name="payment-method" value="klarna" class="radio-input">
+                <div class="content-wrapper">
+                    <div class="header-subheader-wrapper">
+                        <div class="sdk-element header-element" data-element="Header Element">
+                            <span class="sdk-label">paymentPresentation.header.component</span>
+                            <div id="header-container"></div>
+                        </div>
+                        <div class="sdk-element subheader-element" data-element="Subheader Element">
+                            <span class="sdk-label">paymentPresentation.subheader.enriched.component</span>
+                            <div id="subheader-container"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sdk-element icon-element" data-element="Icon Element">
+                    <span class="sdk-label">paymentPresentation.icon</span>
+                    <div id="icon-container"></div>
+                </div>
+            </div>
+
+            <!-- PayPal Payment Option -->
+            <div class="payment-option selected" tabindex="0" role="radio">
+                <input type="radio" name="payment-method" value="paypal" class="radio-input" checked>
+                <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" alt="PayPal" class="payment-icon">
+                <div class="content-wrapper" style="padding-top: 0; justify-content: center;">
+                    <div style="font-size: 16px; font-weight: 500;">PayPal</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sdk-element button-element" data-element="Button Element">
+            <span class="sdk-label">paymentPresentation.paymentButton</span>
+            <div id="button-container"></div>
+        </div>
+    </div>
+
+    <script type="module" src="payment.js"></script>
+</body>
+</html> 
