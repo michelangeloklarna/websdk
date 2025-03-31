@@ -73,11 +73,21 @@ const initKlarnaPayment = async () => {
 
         // Add event listeners for settings
         document.querySelector('.settings-toggle').addEventListener('click', toggleSettings);
-        document.getElementById('apply-settings').addEventListener('click', updateKlarnaPresentation);
         
         // Add event listeners for custom inputs
         document.querySelectorAll('.use-custom').forEach(button => {
             button.addEventListener('click', handleCustomValue);
+        });
+
+        // Add event listeners for all settings inputs
+        const settingsInputs = document.querySelectorAll('#locale, #currency, #amount, input[name="requests"], #button-label, #button-shape, #button-theme, #button-logo-alignment, #button-id');
+        settingsInputs.forEach(input => {
+            if (input.type === 'checkbox') {
+                input.addEventListener('change', updateKlarnaPresentation);
+            } else {
+                input.addEventListener('change', updateKlarnaPresentation);
+                input.addEventListener('input', updateKlarnaPresentation);
+            }
         });
 
         // Add payment method selection handling
