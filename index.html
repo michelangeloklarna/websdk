@@ -6,6 +6,39 @@
     <title>Klarna Payment Integration</title>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
+    <style>
+        #persistent-console {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            font-family: monospace;
+            padding: 10px;
+            overflow-y: auto;
+            z-index: 9999;
+            border-top: 2px solid #444;
+        }
+        #persistent-console .console-entry {
+            margin: 2px 0;
+            padding: 2px 0;
+            border-bottom: 1px solid #333;
+        }
+        #persistent-console .console-entry.error {
+            color: #ff4444;
+        }
+        #persistent-console .console-entry.warn {
+            color: #ffbb33;
+        }
+        #persistent-console .console-entry.info {
+            color: #33b5e5;
+        }
+        body {
+            margin-bottom: 200px; /* Add space for console */
+        }
+    </style>
 </head>
 <body>
     <!-- Settings Panel -->
@@ -278,6 +311,56 @@
         </div>
     </div>
 
+    <div id="persistent-console"></div>
     <script type="module" src="payment.js"></script>
+    <script>
+        // Create persistent console
+        (function() {
+            const consoleDiv = document.getElementById('persistent-console');
+            
+            function logToConsole(message, type = 'log') {
+                const entry = document.createElement('div');
+                entry.className = `console-entry ${type}`;
+                
+                // Handle different types of messages
+                if (typeof message === 'object') {
+                    message = JSON.stringify(message, null, 2);
+                }
+                
+                entry.textContent = `${new Date().toLocaleTimeString()} [${type}]: ${message}`;
+                consoleDiv.appendChild(entry);
+                consoleDiv.scrollTop = consoleDiv.scrollHeight;
+            }
+
+            // Override console methods
+            const originalConsole = {
+                log: console.log,
+                error: console.error,
+                warn: console.warn,
+                info: console.info
+            };
+
+            // Override console methods to show in our persistent console
+            console.log = function() {
+                originalConsole.log.apply(console, arguments);
+                logToConsole(Array.from(arguments).join(' '), 'log');
+            };
+            console.error = function() {
+                originalConsole.error.apply(console, arguments);
+                logToConsole(Array.from(arguments).join(' '), 'error');
+            };
+            console.warn = function() {
+                originalConsole.warn.apply(console, arguments);
+                logToConsole(Array.from(arguments).join(' '), 'warn');
+            };
+            console.info = function() {
+                originalConsole.info.apply(console, arguments);
+                logToConsole(Array.from(arguments).join(' '), 'info');
+            };
+
+            // Add test message
+            console.info('Persistent console initialized');
+        })();
+    </script>
 </body>
 </html> 
