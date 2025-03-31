@@ -128,6 +128,9 @@ const updateKlarnaPresentation = async () => {
         console.log('Updating Klarna presentation with settings:', settings);
 
         const paymentPresentation = await klarnaInstance.Payment.presentation(settings);
+        
+        // Log only the instruction value
+        console.info('PaymentPresentationInstruction:', paymentPresentation.instruction);
 
         // Update icon
         const iconImg = document.createElement('img');

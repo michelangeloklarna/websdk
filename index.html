@@ -310,6 +310,20 @@
         </div>
 
         <div class="payment-selector">
+            <!-- Credit Cards Payment Option -->
+            <div class="payment-option selected" tabindex="0" role="radio">
+                <input type="radio" name="payment-method" value="credit-card" class="radio-input" checked>
+                <div class="content-wrapper">
+                    <div style="font-size: 16px; font-weight: 500;">Credit Cards</div>
+                </div>
+                <div style="display: flex; gap: 12px; margin-left: auto; align-items: center;">
+                    <img src="https://js.stripe.com/v3/fingerprinted/img/visa-365725566f9578a9589553aa9296d178.svg" alt="Visa" style="height: 16px;">
+                    <img src="https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg" alt="Mastercard" style="height: 16px;">
+                    <img src="https://js.stripe.com/v3/fingerprinted/img/amex-a49b82f46c5cd6a96a6e418a6ca1717c.svg" alt="American Express" style="height: 16px;">
+                    <img src="https://js.stripe.com/v3/fingerprinted/img/discover-ac52cd46f89fa40a29a0bfb954e33173.svg" alt="Discover" style="height: 16px;">
+                </div>
+            </div>
+
             <!-- Klarna Payment Option -->
             <div id="klarna-container" class="payment-option" tabindex="0" role="radio">
                 <input type="radio" name="payment-method" value="klarna" class="radio-input">
@@ -328,20 +342,6 @@
                 <div class="sdk-element icon-element" data-element="Icon Element">
                     <span class="sdk-label">paymentPresentation.icon</span>
                     <div id="icon-container"></div>
-                </div>
-            </div>
-
-            <!-- Credit Cards Payment Option -->
-            <div class="payment-option selected" tabindex="0" role="radio">
-                <input type="radio" name="payment-method" value="credit-card" class="radio-input" checked>
-                <div class="content-wrapper">
-                    <div style="font-size: 16px; font-weight: 500;">Credit Cards</div>
-                </div>
-                <div style="display: flex; gap: 12px; margin-left: auto; align-items: center;">
-                    <img src="https://js.stripe.com/v3/fingerprinted/img/visa-365725566f9578a9589553aa9296d178.svg" alt="Visa" style="height: 16px;">
-                    <img src="https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg" alt="Mastercard" style="height: 16px;">
-                    <img src="https://js.stripe.com/v3/fingerprinted/img/amex-a49b82f46c5cd6a96a6e418a6ca1717c.svg" alt="American Express" style="height: 16px;">
-                    <img src="https://js.stripe.com/v3/fingerprinted/img/discover-ac52cd46f89fa40a29a0bfb954e33173.svg" alt="Discover" style="height: 16px;">
                 </div>
             </div>
         </div>
