@@ -125,7 +125,7 @@ const updateKlarnaPresentation = async () => {
         document.getElementById('button-container').innerHTML = '';
 
         const settings = getCurrentSettings();
-        console.log('Updating Klarna presentation with settings:', settings);
+        console.log('Updating Klarna presentation with settings:', JSON.stringify(settings, null, 2));
 
         const paymentPresentation = await klarnaInstance.Payment.presentation(settings);
         
