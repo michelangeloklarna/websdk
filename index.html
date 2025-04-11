@@ -7,131 +7,166 @@
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
     <style>
-        #persistent-console {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 200px;
-            background: rgba(0, 0, 0, 0.9);
-            color: #fff;
-            font-family: monospace;
-            padding: 10px;
-            overflow-y: auto;
-            z-index: 9999;
-            border-top: 2px solid #444;
+        :root {
+            /* Colors */
+            --primary-blue: #4285f4;
+            --primary-blue-hover: #1557b0;
+            --google-blue: #1a73e8;
+            --google-blue-hover: #1557b0;
+            --klarna-pink: #FFB3C7;
+            --text-primary: #202124;
+            --text-secondary: #5f6368;
+            --text-tertiary: #666;
+            --border-color: #e0e0e0;
+            --selected-bg: #f8f9fa;
+            --console-bg: rgba(0, 0, 0, 0.9);
+            --console-error: #ff4444;
+            --console-warn: #ffbb33;
+            --console-info: #33b5e5;
+            
+            /* Spacing */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-lg: 16px;
+            --spacing-xl: 20px;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(60,64,67,0.3);
+            --shadow-md: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+            --shadow-card: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            
+            /* Typography */
+            --font-family-base: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-family-mono: monospace;
+            --font-size-xs: 10px;
+            --font-size-sm: 12px;
+            --font-size-md: 14px;
+            --font-size-lg: 16px;
+            
+            /* Border radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
         }
-        #persistent-console .console-entry {
-            margin: 2px 0;
-            padding: 2px 0;
-            border-bottom: 1px solid #333;
-        }
-        #persistent-console .console-entry.error {
-            color: #ff4444;
-        }
-        #persistent-console .console-entry.warn {
-            color: #ffbb33;
-        }
-        #persistent-console .console-entry.info {
-            color: #33b5e5;
-        }
+        
         body {
             margin-bottom: 200px; /* Add space for console */
+            font-family: var(--font-family-base);
+            color: var(--text-primary);
         }
-        #button-container button,
-        .credit-card-button {
-            background-color: var(--google-blue);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 0 24px;
-            height: 36px;
-            font-family: 'Google Sans', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            letter-spacing: 0.25px;
+        
+        /* ===== PAYMENT CONTAINER ===== */
+        .payment-container {
+            box-shadow: var(--shadow-card);
+            border-radius: var(--radius-md);
+            background: white;
+            max-width: 650px;
+            margin: var(--spacing-xl) auto;
+        }
+        
+        /* ===== PAYMENT OPTIONS ===== */
+        .payment-option {
+            margin-bottom: var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            display: flex;
+            position: relative;
+            align-items: center; /* Center all payment options */
+            min-height: 60px;
+        }
+        
+        .payment-option.selected {
+            border-color: var(--primary-blue);
+            background-color: var(--selected-bg);
+        }
+        
+        /* Credit Card option - now uses the same structure as Klarna */
+        .payment-option:first-child {
+            padding: var(--spacing-lg);
+        }
+        
+        /* Klarna container */
+        #klarna-container {
+            padding: var(--spacing-lg);
+        }
+        
+        /* ===== RADIO BUTTONS ===== */
+        .radio-input {
+            position: relative;
+            accent-color: var(--primary-blue);
+            width: 20px;
+            height: 20px;
             cursor: pointer;
-            transition: background-color 0.2s ease, box-shadow 0.2s ease;
-            width: auto;
-            min-width: 200px;
+            margin: 0 var(--spacing-sm);
+        }
+        
+        /* Both radio buttons are positioned the same way */
+        .payment-option .radio-input {
+            margin-right: var(--spacing-lg);
+            flex-shrink: 0;
+        }
+        
+        /* ===== CONTENT LAYOUT ===== */
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        
+        /* Both content wrappers have the same spacing */
+        .payment-option .content-wrapper {
+            margin-left: 0;
+            padding-left: 0;
+        }
+        
+        /* Klarna specific elements */
+        .header-subheader-wrapper {
+            display: flex;
+            flex-direction: column;
+            margin-top: 0;
+        }
+        
+        /* ===== TEXT STYLING ===== */
+        #header-container, 
+        .payment-option:first-child .content-wrapper > div {
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-lg);
+            font-weight: 500;
+            line-height: 24px;
+        }
+        
+        /* ===== ICONS ===== */
+        #icon-container,
+        .payment-option:first-child .card-icons {
             display: flex;
             align-items: center;
-            justify-content: center;
-        }
-        #button-container button:hover,
-        .credit-card-button:hover {
-            background-color: var(--google-blue-hover);
-            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
-        }
-        #button-container button:active,
-        .credit-card-button:active {
-            background-color: var(--google-blue-hover);
-            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
-        }
-        .credit-card-button {
-            background-color: #1a73e8;
-        }
-        .credit-card-button:hover,
-        .credit-card-button:active {
-            background-color: #1557b0;
+            gap: 12px;
+            margin-left: auto;
+            padding-left: var(--spacing-lg);
         }
         
-        .custom-klarna-button {
-            background-color: #FFB3C7;
-            color: black;
-            border: none;
-            border-radius: 4px;
-            padding: 0 24px;
-            height: 36px;
-            font-family: 'Google Sans', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            letter-spacing: 0.25px;
-            cursor: pointer;
-            transition: background-color 0.2s ease, box-shadow 0.2s ease;
-            width: auto;
-            min-width: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .custom-klarna-button:hover {
-            background-color: #FF8AB0;
-            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
-        }
-        
-        .custom-klarna-button:active {
-            background-color: #FF8AB0;
-            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
-        }
-        
-        .help-text {
-            display: block;
-            margin-top: 8px;
-            font-size: 12px;
-            color: #666;
-            line-height: 1.4;
-        }
-        
-        /* Klarna element styling */
+        /* ===== KLARNA ELEMENTS ===== */
         .klarna-header {
-            font-size: 16px;
+            font-size: var(--font-size-lg);
             font-weight: 500;
-            color: #000;
-            margin-bottom: 4px;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+            font-family: var(--font-family-base);
+            text-align: left;
         }
         
         .klarna-subheader-wrapper {
-            font-size: 14px;
-            color: #444;
+            font-size: var(--font-size-md);
+            color: var(--text-secondary);
             display: flex;
             flex-wrap: wrap;
             align-items: center;
+            font-family: var(--font-family-base);
         }
         
         .klarna-learn-more {
-            color: #0d47a1;
+            color: var(--primary-blue);
             text-decoration: none;
             font-weight: 500;
         }
@@ -145,32 +180,361 @@
             width: auto;
         }
         
-        .checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+        /* ===== SDK ELEMENTS ===== */
+        .sdk-element {
+            padding: var(--spacing-xs);
+            border-radius: var(--radius-sm);
+            margin: 2px 0;
+            position: relative;
         }
         
-        .checkbox-group label {
+        .sdk-element.header-element {
+            padding: 3px var(--spacing-xs);
+            margin: 0;
+            padding-top: 0;
+        }
+        
+        .sdk-label {
+            font-size: var(--font-size-xs);
+            font-family: var(--font-family-mono);
+            color: var(--text-tertiary);
+            margin-bottom: 2px;
+            display: block;
+            opacity: 0.7;
+        }
+        
+        /* ===== BUTTON STYLES ===== */
+        .button-base {
+            font-family: var(--font-family-base);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            letter-spacing: 0.25px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
             display: flex;
             align-items: center;
-            gap: 4px;
-            cursor: pointer;
-            font-size: 14px;
+            justify-content: center;
         }
         
+        #button-container button,
+        .credit-card-button {
+            composes: button-base;
+            background-color: var(--google-blue);
+            color: white;
+            padding: 0 24px;
+            height: 36px;
+            font-size: var(--font-size-md);
+            width: auto;
+            min-width: 200px;
+        }
+        
+        #button-container button:hover,
+        .credit-card-button:hover {
+            background-color: var(--google-blue-hover);
+            box-shadow: var(--shadow-md);
+        }
+        
+        #button-container button:active,
+        .credit-card-button:active {
+            background-color: var(--google-blue-hover);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        #button-container {
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .custom-klarna-button {
+            composes: button-base;
+            background-color: #000000;
+            color: white;
+            padding: 0 24px;
+            height: 48px;
+            font-size: var(--font-size-lg);
+            width: 100%;
+            max-width: 400px;
+            margin: var(--spacing-xl) auto;
+            position: relative;
+        }
+        
+        .custom-klarna-button:after {
+            content: "Klarna";
+            position: absolute;
+            right: 75px;
+            background-color: var(--klarna-pink);
+            color: #000;
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-md);
+            font-weight: bold;
+        }
+        
+        .custom-klarna-button:hover {
+            background-color: #333;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .custom-klarna-button:active {
+            background-color: #333;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        /* ===== SETTINGS PANEL ===== */
+        .settings-toggle {
+            position: fixed;
+            top: var(--spacing-xl);
+            right: var(--spacing-xl);
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-md) var(--spacing-lg);
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-md);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10000; /* Ensure button stays above console */
+            box-shadow: var(--shadow-md);
+        }
+        
+        .settings-toggle:hover {
+            background-color: var(--primary-blue-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .settings-toggle:active {
+            transform: translateY(0);
+        }
+        
+        .settings-panel {
+            position: relative;
+            z-index: 10000; /* Ensure settings panel appears above console */
+        }
+        
+        .settings-content {
+            position: fixed;
+            top: calc(var(--spacing-xl) + 40px);
+            right: var(--spacing-xl);
+            background: white;
+            border-radius: var(--radius-md);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: var(--spacing-xl);
+            width: 380px;
+            max-height: calc(100vh - 240px); /* Ensure it doesn't overlap with console */
+            overflow-y: auto;
+            z-index: 10000;
+            display: none;
+            animation: fadeIn 0.2s ease-out;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .settings-panel.active .settings-content {
+            display: block;
+        }
+        
+        .settings-content h3 {
+            margin-top: 0;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+            font-size: 18px;
+            font-weight: 600;
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--primary-blue);
+        }
+        
+        .settings-group {
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .settings-group:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .settings-group label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .settings-group select,
+        .settings-group input[type="text"],
+        .settings-group input[type="number"] {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-xs);
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-md);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background-color: #f8f9fa;
+        }
+        
+        .settings-group select:focus,
+        .settings-group input[type="text"]:focus,
+        .settings-group input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+        }
+        
+        .settings-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8.825L1.175 4 2.05 3.125 6 7.075 9.95 3.125 10.825 4z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+        
+        .select-with-custom {
+            position: relative;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .custom-input {
+            display: flex;
+            gap: var(--spacing-xs);
+            margin-top: var(--spacing-xs);
+        }
+        
+        .custom-input input {
+            flex: 1;
+        }
+        
+        .use-custom {
+            background-color: #f1f3f4;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 6px 12px;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .use-custom:hover {
+            background-color: #e8eaed;
+        }
+        
+        .checkbox-group,
         .radio-group {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
+            padding: var(--spacing-sm) 0;
         }
         
+        .checkbox-group label,
         .radio-group label {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 10px;
+            font-weight: normal;
+            margin-bottom: 0;
             cursor: pointer;
-            font-size: 14px;
+            position: relative;
+            padding: 4px 0;
+        }
+        
+        .checkbox-group input[type="checkbox"],
+        .radio-group input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            margin: 0;
+            accent-color: var(--primary-blue);
+        }
+        
+        .help-text {
+            display: block;
+            margin-top: var(--spacing-sm);
+            font-size: var(--font-size-sm);
+            color: var(--text-tertiary);
+            line-height: 1.5;
+            background-color: #f8f9fa;
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--primary-blue);
+        }
+        
+        .settings-row {
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .button-config {
+            background-color: #f8f9fa;
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            margin-top: var(--spacing-xs);
+        }
+        
+        /* ===== CONSOLE STYLING ===== */
+        #persistent-console {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: var(--console-bg);
+            color: #fff;
+            font-family: var(--font-family-mono);
+            padding: var(--spacing-sm);
+            overflow-y: auto;
+            z-index: 9999;
+            border-top: 2px solid #444;
+        }
+        
+        #persistent-console .console-entry {
+            margin: 2px 0;
+            padding: 2px 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        #persistent-console .console-entry.error {
+            color: var(--console-error);
+        }
+        
+        #persistent-console .console-entry.warn {
+            color: var(--console-warn);
+        }
+        
+        #persistent-console .console-entry.info {
+            color: var(--console-info);
+        }
+        
+        /* ===== RESPONSIVE STYLES ===== */
+        @media (max-width: 768px) {
+            .payment-container {
+                max-width: 100%;
+                margin: var(--spacing-md);
+            }
+            
+            .custom-klarna-button {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -524,6 +888,250 @@
 
             // Add test message
             console.info('Persistent console initialized');
+            
+            // Initialize settings panel toggle
+            const settingsToggle = document.querySelector('.settings-toggle');
+            const settingsPanel = document.querySelector('.settings-panel');
+            
+            if (settingsToggle && settingsPanel) {
+                settingsToggle.addEventListener('click', function() {
+                    settingsPanel.classList.toggle('active');
+                });
+                
+                // Close panel when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!settingsPanel.contains(event.target) && event.target !== settingsToggle) {
+                        settingsPanel.classList.remove('active');
+                    }
+                });
+                
+                // Handle settings changes
+                const requestCheckboxes = document.querySelectorAll('input[name="requests"]');
+                const subheaderStyleRadios = document.querySelectorAll('input[name="subheader-style"]');
+                const flowInitiationMode = document.getElementById('flow-initiation-mode');
+                
+                // Button configuration controls
+                const buttonLabel = document.getElementById('button-label');
+                const buttonShape = document.getElementById('button-shape');
+                const buttonTheme = document.getElementById('button-theme');
+                const buttonLogoAlignment = document.getElementById('button-logo-alignment');
+                const buttonId = document.getElementById('button-id');
+                
+                // Map of UI elements and their corresponding checkboxes
+                const uiElementMap = {
+                    'HEADER': document.querySelector('.sdk-element.header-element'),
+                    'SUBHEADER': document.querySelector('.sdk-element.subheader-element'),
+                    'ICON': document.querySelector('.sdk-element.icon-element'),
+                    'BUTTON': document.querySelector('.sdk-element.button-element')
+                };
+                
+                // Function to apply settings
+                function applySettings() {
+                    // Apply checkbox settings
+                    requestCheckboxes.forEach(checkbox => {
+                        const element = uiElementMap[checkbox.value];
+                        if (element) {
+                            element.style.display = checkbox.checked ? 'block' : 'none';
+                        }
+                    });
+                    
+                    // Apply subheader style
+                    const enrichedSelected = Array.from(subheaderStyleRadios).find(radio => radio.value === 'enriched')?.checked;
+                    console.log(`Subheader style: ${enrichedSelected ? 'enriched' : 'short'}`);
+                    
+                    // Log flow initiation mode
+                    console.log(`Flow initiation mode: ${flowInitiationMode.value}`);
+                    
+                    // Log applied settings
+                    console.info('Settings applied');
+                }
+                
+                // Function to update button configuration
+                function updateButtonConfig() {
+                    // Get current button configuration
+                    const config = {
+                        label: buttonLabel ? buttonLabel.value : 'pay',
+                        shape: buttonShape ? buttonShape.value : 'default',
+                        theme: buttonTheme ? buttonTheme.value : 'default',
+                        logoAlignment: buttonLogoAlignment ? buttonLogoAlignment.value : 'default',
+                        id: buttonId ? buttonId.value : ''
+                    };
+                    
+                    console.log('Button configuration updated:', config);
+                    
+                    // Proper unmounting and remounting of Klarna button
+                    unmountKlarnaElements();
+                    setTimeout(() => {
+                        mountKlarnaButton(config);
+                    }, 50); // Small delay to ensure unmounting is complete
+                }
+                
+                // Function to unmount all Klarna elements
+                function unmountKlarnaElements() {
+                    // Find all Klarna containers
+                    const containers = [
+                        document.getElementById('header-container'),
+                        document.getElementById('subheader-container'),
+                        document.getElementById('icon-container'),
+                        document.getElementById('button-container')
+                    ];
+                    
+                    console.log('Unmounting Klarna elements...');
+                    
+                    // Properly unmount each container
+                    containers.forEach(container => {
+                        if (container) {
+                            // If this was a real SDK, we would call their unmount method here
+                            // Example: Klarna.Payments.unmount(container.id);
+                            
+                            // For our demo, we'll just clear the containers
+                            console.log(`Clearing container: ${container.id}`);
+                            container.innerHTML = '';
+                            
+                            // More thorough clearing if needed
+                            while (container.firstChild) {
+                                container.removeChild(container.firstChild);
+                            }
+                        }
+                    });
+                    
+                    console.log('All Klarna elements unmounted');
+                }
+                
+                // Function to mount Klarna button with configuration
+                function mountKlarnaButton(config) {
+                    const buttonContainer = document.getElementById('button-container');
+                    if (!buttonContainer) return;
+                    
+                    console.log('Mounting Klarna button with config:', config);
+                    
+                    // Verify container is empty before adding new content
+                    if (buttonContainer.childElementCount > 0) {
+                        console.warn('Button container still has children before mounting!', buttonContainer.childElementCount);
+                        // Force clear again
+                        buttonContainer.innerHTML = '';
+                    }
+                    
+                    // Create simulated button with the configuration
+                    const button = document.createElement('button');
+                    button.textContent = `${config.label} with Klarna`;
+                    button.className = `klarna-button klarna-button-${config.shape} klarna-button-${config.theme} klarna-logo-${config.logoAlignment}`;
+                    button.dataset.mountTime = new Date().toISOString();
+                    if (config.id) button.id = config.id;
+                    
+                    // Add click handler
+                    button.addEventListener('click', handleKlarnaPayment);
+                    
+                    // Add to container
+                    buttonContainer.appendChild(button);
+                    console.log('Klarna button mounted successfully');
+                }
+                
+                // Function to handle Klarna payment initiation
+                function handleKlarnaPayment(event) {
+                    event.preventDefault();
+                    
+                    // Get amount from settings
+                    const amountInput = document.getElementById('amount');
+                    const amount = amountInput ? amountInput.value : null;
+                    
+                    if (!amount) {
+                        console.error('Payment amount is not specified');
+                        return;
+                    }
+                    
+                    console.log(`Initiating Klarna payment with amount: ${amount}`);
+                    
+                    // Get other necessary parameters
+                    const locale = document.getElementById('locale').value;
+                    const currency = document.getElementById('currency').value;
+                    const flowMode = document.getElementById('flow-initiation-mode').value;
+                    const sdkToken = document.getElementById('sdkToken').value;
+                    
+                    // Create payment options object
+                    const paymentOptions = {
+                        payment_amount: parseInt(amount, 10),
+                        locale: locale,
+                        currency: currency,
+                        flow_initiation_mode: flowMode
+                    };
+                    
+                    // Add SDK token if available
+                    if (sdkToken) {
+                        paymentOptions.sdk_token = sdkToken;
+                    }
+                    
+                    console.log('Payment options:', paymentOptions);
+                    
+                    // Here you would call the Klarna SDK to initiate payment
+                    // Example: Klarna.Payments.initiate(paymentOptions)
+                    //    .then(response => console.log('Payment initiated:', response))
+                    //    .catch(error => console.error('Payment initiation failed:', error));
+                    
+                    // For now, just log what would be sent
+                    console.info('Would initiate Klarna payment with options:', JSON.stringify(paymentOptions, null, 2));
+                }
+                
+                // Add click handler to the Klarna payment option as well
+                const klarnaOption = document.getElementById('klarna-container');
+                if (klarnaOption) {
+                    klarnaOption.addEventListener('click', function() {
+                        const klarnaRadio = klarnaOption.querySelector('.radio-input');
+                        if (klarnaRadio) {
+                            klarnaRadio.checked = true;
+                            
+                            // Remove 'selected' class from all options
+                            document.querySelectorAll('.payment-option').forEach(option => {
+                                option.classList.remove('selected');
+                            });
+                            
+                            // Add 'selected' class to Klarna option
+                            klarnaOption.classList.add('selected');
+                        }
+                    });
+                }
+                
+                // Monitor button container for any external changes
+                const buttonContainer = document.getElementById('button-container');
+                if (buttonContainer) {
+                    // Set up a mutation observer to detect changes made outside our code
+                    const observer = new MutationObserver((mutations) => {
+                        mutations.forEach((mutation) => {
+                            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                                console.warn('Button container was modified externally. This might cause duplication.');
+                            }
+                        });
+                    });
+                    
+                    observer.observe(buttonContainer, { childList: true });
+                }
+                
+                // Add event listeners to settings controls
+                requestCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', applySettings);
+                });
+                
+                subheaderStyleRadios.forEach(radio => {
+                    radio.addEventListener('change', applySettings);
+                });
+                
+                flowInitiationMode.addEventListener('change', () => {
+                    console.log(`Flow initiation mode changed to: ${flowInitiationMode.value}`);
+                });
+                
+                // Add event listeners to button configuration controls
+                if (buttonLabel) buttonLabel.addEventListener('change', updateButtonConfig);
+                if (buttonShape) buttonShape.addEventListener('change', updateButtonConfig);
+                if (buttonTheme) buttonTheme.addEventListener('change', updateButtonConfig);
+                if (buttonLogoAlignment) buttonLogoAlignment.addEventListener('change', updateButtonConfig);
+                if (buttonId) buttonId.addEventListener('input', updateButtonConfig);
+                
+                // Apply settings on page load
+                applySettings();
+                
+                // Apply initial button configuration
+                updateButtonConfig();
+            }
         })();
     </script>
 </body>

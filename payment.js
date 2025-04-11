@@ -169,54 +169,62 @@ const updateKlarnaPresentation = async () => {
         console.info('=== KLARNA SDK RESPONSE END ===');
 
         // Always display these elements if available, regardless of settings
-        if (paymentPresentation.descriptor) {
-            // Update icon - using badge image
-            if (paymentPresentation.descriptor.icon?.badge_image_url) {
-                const iconImg = document.createElement('img');
-                iconImg.src = paymentPresentation.descriptor.icon.badge_image_url;
-                iconImg.alt = paymentPresentation.descriptor.icon.alt || 'Klarna';
-                iconImg.className = 'payment-icon';
-                document.getElementById('icon-container').appendChild(iconImg);
-            }
+        // Check if we have a descriptor property or direct properties
+        const hasDescriptor = !!paymentPresentation.descriptor;
+        
+        // Get icon data - could be in descriptor.icon or directly in icon
+        const iconData = hasDescriptor ? paymentPresentation.descriptor?.icon : paymentPresentation.icon;
+        if (iconData) {
+            const iconImg = document.createElement('img');
+            // Use appropriate property based on where icon data is
+            iconImg.src = iconData.badge_image_url || iconData.imageUrl || '';
+            iconImg.alt = iconData.alt || 'Klarna';
+            iconImg.className = 'payment-icon';
+            document.getElementById('icon-container').appendChild(iconImg);
+        }
 
-            // Display header
-            if (paymentPresentation.descriptor.header?.text) {
-                const headerEl = document.createElement('div');
-                headerEl.textContent = paymentPresentation.descriptor.header.text;
-                headerEl.className = 'klarna-header';
-                document.getElementById('header-container').appendChild(headerEl);
-            }
+        // Get header data - could be in descriptor.header or directly in header
+        const headerData = hasDescriptor ? paymentPresentation.descriptor?.header : paymentPresentation.header;
+        if (headerData?.text) {
+            const headerEl = document.createElement('div');
+            headerEl.textContent = headerData.text;
+            headerEl.className = 'klarna-header';
+            document.getElementById('header-container').appendChild(headerEl);
+        }
 
+        // Get subheader data - could be in descriptor.subheader or directly in subheader
+        const subheaderData = hasDescriptor ? paymentPresentation.descriptor?.subheader : paymentPresentation.subheader;
+        if (subheaderData) {
             // Get user's subheader style preference
             const subheaderStyle = settings.subheaderStyle || 'enriched';
             console.info('Using subheader style:', subheaderStyle);
             
-            if (subheaderStyle === 'short' && paymentPresentation.descriptor.subheader?.short) {
+            if (subheaderStyle === 'short' && subheaderData.short?.text) {
                 // Display short subheader
                 const subheaderWrapper = document.createElement('div');
                 subheaderWrapper.className = 'klarna-subheader-wrapper';
                 
                 const subheaderText = document.createElement('span');
-                subheaderText.textContent = paymentPresentation.descriptor.subheader.short.text || '';
+                subheaderText.textContent = subheaderData.short.text || '';
                 subheaderWrapper.appendChild(subheaderText);
                 
                 document.getElementById('subheader-container').appendChild(subheaderWrapper);
             } 
-            else if (paymentPresentation.descriptor.subheader?.enriched) {
+            else if (subheaderData.enriched) {
                 // Display enriched subheader with learn more link
                 const subheaderWrapper = document.createElement('div');
                 subheaderWrapper.className = 'klarna-subheader-wrapper';
                 
                 // Add the subheader text
                 const subheaderText = document.createElement('span');
-                subheaderText.textContent = paymentPresentation.descriptor.subheader.enriched.text || '';
+                subheaderText.textContent = subheaderData.enriched.text || '';
                 subheaderWrapper.appendChild(subheaderText);
                 
                 // Add learn more link if available
-                if (paymentPresentation.descriptor.subheader.enriched.link) {
+                if (subheaderData.enriched.link) {
                     const link = document.createElement('a');
-                    link.href = paymentPresentation.descriptor.subheader.enriched.link.href;
-                    link.textContent = paymentPresentation.descriptor.subheader.enriched.link.link_text || 'Learn more';
+                    link.href = subheaderData.enriched.link.href;
+                    link.textContent = subheaderData.enriched.link.link_text || 'Learn more';
                     link.target = '_blank';
                     link.className = 'klarna-learn-more';
                     link.style.marginLeft = '4px';
@@ -248,14 +256,17 @@ const updatePaymentButton = async (paymentMethod) => {
             // Get the current presentation response to access payment_button if needed
             const presentation = await klarnaInstance.Payment.presentation(settings);
             
+            // Get button text from either payment_button or paymentButton
+            const buttonText = presentation.payment_button?.text || 
+                              presentation.paymentButton?.text || 
+                              'Pay with Klarna';
+            
             const buttonConfig = {
                 ...settings.buttonConfig,
                 // Only include id if it's not empty
                 ...(settings.buttonConfig.id && { id: settings.buttonConfig.id }),
-                // Use the payment_button text if available
-                ...(presentation.payment_button?.text && { 
-                    text: presentation.payment_button.text 
-                })
+                // Use the button text if available
+                text: buttonText
             };
             
             console.log('Creating button with config:', buttonConfig);
