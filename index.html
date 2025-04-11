@@ -1028,6 +1028,9 @@
                         intents: ["PAY"]
                     });
                     
+                    // Mount the Klarna icon from the badge image URL
+                    paymentPresentation.icon.component().mount("#icon-container");
+                    
                     // Configure the button
                     const buttonConfig = {
                         shape: config.shape || "default",
@@ -1064,9 +1067,71 @@
                     
                     // Render and mount the button
                     paymentPresentation.paymentButton.component(buttonConfig).mount("#button-container");
+                    
+                    // Mount header and subheader components as well
+                    paymentPresentation.header.component().mount("#header-container");
+                    paymentPresentation.subheader.enriched.component().mount("#subheader-container");
                     */
                     
-                    // For this demo, we'll create a simulated button
+                    // For this demo, we'll create simulated elements
+                    
+                    // Create simulated icon
+                    const iconContainer = document.getElementById('icon-container');
+                    if (iconContainer) {
+                        // Clear icon container first
+                        iconContainer.innerHTML = '';
+                        
+                        // Create a simulated Klarna icon/badge
+                        const icon = document.createElement('img');
+                        icon.src = "https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg";
+                        icon.alt = "Klarna";
+                        icon.className = "payment-icon";
+                        icon.style.height = "24px";
+                        icon.dataset.testid = "klarna-badge-image";
+                        
+                        // Add the icon to the container
+                        iconContainer.appendChild(icon);
+                        console.log('Klarna icon mounted successfully');
+                    }
+                    
+                    // Create simulated header
+                    const headerContainer = document.getElementById('header-container');
+                    if (headerContainer) {
+                        // Clear header container first
+                        headerContainer.innerHTML = '';
+                        
+                        // Add a simulated header
+                        const header = document.createElement('div');
+                        header.textContent = "Pay with Klarna";
+                        header.className = "klarna-header";
+                        headerContainer.appendChild(header);
+                    }
+                    
+                    // Create simulated subheader
+                    const subheaderContainer = document.getElementById('subheader-container');
+                    if (subheaderContainer) {
+                        // Clear subheader container first
+                        subheaderContainer.innerHTML = '';
+                        
+                        // Add a simulated enriched subheader
+                        const subheader = document.createElement('div');
+                        subheader.className = "klarna-subheader-wrapper";
+                        
+                        // Get amount from settings
+                        const amountInput = document.getElementById('amount');
+                        const amount = amountInput ? amountInput.value : 11800;
+                        
+                        // Format amount for display
+                        const formattedAmount = new Intl.NumberFormat('en-US', {
+                            style: 'currency',
+                            currency: 'USD'
+                        }).format(amount / 100);
+                        
+                        subheader.innerHTML = `Pay ${formattedAmount} now. <a href="#" class="klarna-learn-more">Learn more</a>`;
+                        subheaderContainer.appendChild(subheader);
+                    }
+                    
+                    // Create simulated button with the configuration
                     const button = document.createElement('button');
                     button.textContent = `${config.label} with Klarna`;
                     button.className = `klarna-button klarna-button-${config.shape} klarna-button-${config.theme} klarna-logo-${config.logoAlignment}`;
