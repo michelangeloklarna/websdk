@@ -1031,9 +1031,15 @@
                 function handleKlarnaPayment(event) {
                     event.preventDefault();
                     
+                    console.log('%c Payment Initiation Process Started ', 'background: #4285f4; color: white; font-weight: bold; padding: 4px;');
+                    
                     // Get amount from settings
                     const amountInput = document.getElementById('amount');
                     const amount = amountInput ? amountInput.value : null;
+                    
+                    // Log raw values for debugging
+                    console.log('Raw amount value:', amount);
+                    console.log('Amount input element:', amountInput);
                     
                     if (!amount) {
                         console.error('Payment amount is not specified');
@@ -1048,20 +1054,70 @@
                     const flowMode = document.getElementById('flow-initiation-mode').value;
                     const sdkToken = document.getElementById('sdkToken').value;
                     
-                    // Create payment options object
-                    const paymentOptions = {
-                        payment_amount: parseInt(amount, 10),
+                    console.log('Collected payment parameters:', {
+                        amount: amount,
+                        parsedAmount: parseInt(amount, 10),
                         locale: locale,
                         currency: currency,
-                        flow_initiation_mode: flowMode
+                        flowMode: flowMode,
+                        hasToken: !!sdkToken
+                    });
+                    
+                    // Create payment options object according to Klarna API documentation
+                    const paymentOptions = {
+                        currency: currency,
+                        payment_amount: amount,
+                        request_payment_transaction: {
+                            amount: parseInt(amount, 10),
+                            payment_transaction_reference: `demo-transaction-${Date.now()}`
+                        },
+                        step_up_config: {
+                            payment_request_reference: `demo-payment-request-${Date.now()}`,
+                            customer_interaction_config: {
+                                method: "HANDOVER",
+                                return_url: window.location.origin + "/confirmation.html?payment_success=true&amount=" + amount + "&reference=" + encodeURIComponent(`demo-transaction-${Date.now()}`),
+                                app_return_url: window.location.origin + "/confirmation.html?payment_success=true&amount=" + amount + "&reference=" + encodeURIComponent(`demo-transaction-${Date.now()}`) + "&app=true",
+                                cancel_url: window.location.origin + "/confirmation.html?payment_canceled=true"
+                            }
+                        }
                     };
+                    
+                    // Add flow initiation mode if specified
+                    if (flowMode) {
+                        paymentOptions.flow_initiation_mode = flowMode;
+                    }
                     
                     // Add SDK token if available
                     if (sdkToken) {
                         paymentOptions.sdk_token = sdkToken;
                     }
                     
-                    console.log('Payment options:', paymentOptions);
+                    console.log('Payment options object created:', paymentOptions);
+                    console.log('Verified payment_amount is set to:', paymentOptions.payment_amount);
+                    
+                    // Simulate the actual SDK call with additional logging
+                    console.log('%c Simulating SDK.initiate() call ', 'background: #34A853; color: white; font-weight: bold; padding: 4px;');
+                    
+                    // In a real integration, this would be where we call the actual SDK
+                    // For demonstration, let's simulate what a real SDK might do
+                    setTimeout(() => {
+                        try {
+                            // Check if the transaction object would be valid in a real SDK
+                            if (!paymentOptions.payment_amount) {
+                                throw new Error("Parameter payment_amount must not be null");
+                            }
+                            
+                            console.log('%c SDK Call Would Succeed ', 'background: #34A853; color: white; font-weight: bold; padding: 4px;');
+                            console.log('Simulated SDK response:', {
+                                status: 'success',
+                                auth_token: 'simulated-auth-token-' + Date.now(),
+                                redirect_url: paymentOptions.step_up_config.customer_interaction_config.return_url
+                            });
+                        } catch (error) {
+                            console.error('%c SDK Call Would Fail ', 'background: #EA4335; color: white; font-weight: bold; padding: 4px;');
+                            console.error('Simulated error:', error);
+                        }
+                    }, 500);
                     
                     // Here you would call the Klarna SDK to initiate payment
                     // Example: Klarna.Payments.initiate(paymentOptions)
@@ -1070,6 +1126,18 @@
                     
                     // For now, just log what would be sent
                     console.info('Would initiate Klarna payment with options:', JSON.stringify(paymentOptions, null, 2));
+                    
+                    // Display full authorization request in a formatted way in the console
+                    console.log('%c Authorization Request Details ', 'background: #3C4043; color: white; font-weight: bold; padding: 4px;');
+                    console.log('%c Request URL: ', 'font-weight: bold;', 'https://api.klarna.com/payments/v1/authorizations');
+                    console.log('%c HTTP Method: ', 'font-weight: bold;', 'POST');
+                    console.log('%c Headers: ', 'font-weight: bold;', {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Basic ' + (sdkToken ? '[SDK_TOKEN_PROVIDED]' : '[SDK_TOKEN_MISSING]'),
+                        'Klarna-Partner': 'Demo Integration'
+                    });
+                    console.log('%c Request Body: ', 'font-weight: bold;');
+                    console.log(JSON.stringify(paymentOptions, null, 2));
                 }
                 
                 // Add click handler to the Klarna payment option as well

@@ -285,7 +285,7 @@ const updatePaymentButton = async (paymentMethod) => {
                 
                 return klarnaInstance.Payment.initiate({
                     currency: settings.currency,
-                    amount: settings.amount,
+                    payment_amount: settings.amount,
                     flowInitiationMode: settings.flowInitiationMode
                 });
             })

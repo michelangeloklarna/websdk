@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Colors */
+            --primary-blue: #4285f4;
+            --primary-blue-hover: #1557b0;
+            --success-green: #34A853;
+            --error-red: #EA4335;
+            --warning-yellow: #FBBC05;
+            --text-primary: #202124;
+            --text-secondary: #5f6368;
+            --background-light: #f8f9fa;
+            --border-color: #e0e0e0;
+            
+            /* Spacing */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-lg: 16px;
+            --spacing-xl: 24px;
+            --spacing-xxl: 32px;
+            
+            /* Shadows */
+            --shadow-card: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            
+            /* Typography */
+            --font-family-base: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-size-sm: 14px;
+            --font-size-md: 16px;
+            --font-size-lg: 20px;
+            --font-size-xl: 24px;
+            
+            /* Border radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+        }
+        
+        body {
+            font-family: var(--font-family-base);
+            color: var(--text-primary);
+            background-color: var(--background-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .confirmation-container {
+            background-color: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            width: 90%;
+            max-width: 600px;
+            padding: var(--spacing-xl);
+            text-align: center;
+        }
+        
+        .status-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto var(--spacing-lg);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .status-icon.success {
+            background-color: var(--success-green);
+            color: white;
+        }
+        
+        .status-icon.error {
+            background-color: var(--error-red);
+            color: white;
+        }
+        
+        .status-icon svg {
+            width: 36px;
+            height: 36px;
+        }
+        
+        h1 {
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+        }
+        
+        .status-message {
+            font-size: var(--font-size-md);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .order-details {
+            background-color: var(--background-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+            text-align: left;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .detail-row:last-child {
+            margin-bottom: 0;
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+            font-weight: bold;
+        }
+        
+        .detail-label {
+            color: var(--text-secondary);
+        }
+        
+        .detail-value {
+            font-weight: 500;
+        }
+        
+        .button {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-md) var(--spacing-xl);
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-md);
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .button:hover {
+            background-color: var(--primary-blue-hover);
+        }
+        
+        .timestamp {
+            margin-top: var(--spacing-xl);
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+        
+        @media (max-width: 600px) {
+            .confirmation-container {
+                width: 95%;
+                padding: var(--spacing-lg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmation-container">
+        <div id="successContent" style="display: none;">
+            <div class="status-icon success">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
+            <h1>Payment Successful!</h1>
+            <div class="status-message">Thank you for your payment. Your transaction has been completed successfully.</div>
+            
+            <div class="order-details">
+                <div class="detail-row">
+                    <span class="detail-label">Date:</span>
+                    <span class="detail-value" id="orderDate">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Transaction Reference:</span>
+                    <span class="detail-value" id="transactionReference">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Payment Method:</span>
+                    <span class="detail-value">Klarna</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Amount:</span>
+                    <span class="detail-value" id="orderAmount">-</span>
+                </div>
+            </div>
+            
+            <a href="index.html" class="button">Return to Store</a>
+        </div>
+        
+        <div id="cancelContent" style="display: none;">
+            <div class="status-icon error">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </div>
+            <h1>Payment Canceled</h1>
+            <div class="status-message">Your payment process was canceled. No charges have been made to your account.</div>
+            
+            <a href="index.html" class="button">Try Again</a>
+        </div>
+        
+        <div id="errorContent" style="display: none;">
+            <div class="status-icon error">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+            <h1>Payment Error</h1>
+            <div class="status-message">There was an error processing your payment. Please try again or contact support.</div>
+            
+            <a href="index.html" class="button">Try Again</a>
+        </div>
+        
+        <div class="timestamp" id="timestamp"></div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const isSuccess = urlParams.get('payment_success') === 'true';
+            const isCanceled = urlParams.get('payment_canceled') === 'true';
+            const amount = urlParams.get('amount');
+            const reference = urlParams.get('reference');
+            
+            // Format currency
+            function formatCurrency(amount, currency = 'USD') {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: currency
+                }).format(amount / 100); // Assuming amount is in cents
+            }
+            
+            // Set current timestamp
+            const now = new Date();
+            document.getElementById('timestamp').textContent = now.toLocaleString();
+            document.getElementById('orderDate').textContent = now.toLocaleDateString();
+            
+            if (isSuccess) {
+                // Show success content
+                document.getElementById('successContent').style.display = 'block';
+                
+                // Set transaction details
+                if (reference) {
+                    document.getElementById('transactionReference').textContent = reference;
+                }
+                
+                if (amount) {
+                    document.getElementById('orderAmount').textContent = formatCurrency(amount);
+                }
+                
+                // Update page title
+                document.title = 'Payment Successful | Order Confirmation';
+            } else if (isCanceled) {
+                // Show canceled content
+                document.getElementById('cancelContent').style.display = 'block';
+                
+                // Update page title
+                document.title = 'Payment Canceled';
+            } else {
+                // Show error content
+                document.getElementById('errorContent').style.display = 'block';
+                
+                // Update page title
+                document.title = 'Payment Error';
+            }
+            
+            // Log confirmation page load to console
+            console.log('Confirmation page loaded with params:', {
+                success: isSuccess,
+                canceled: isCanceled,
+                amount: amount,
+                reference: reference
+            });
+        });
+    </script>
+</body>
+</html> 
