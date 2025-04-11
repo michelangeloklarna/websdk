@@ -45,6 +45,7 @@ const getCurrentSettings = () => {
         currency: document.getElementById('currency').value,
         amount: parseInt(document.getElementById('amount').value),
         request: getSelectedValues('requests'),
+        flowInitiationMode: document.getElementById('flow-initiation-mode').value,
         buttonConfig: {
             label: document.getElementById('button-label').value,
             shape: document.getElementById('button-shape').value,
@@ -69,6 +70,9 @@ const initKlarnaPayment = async () => {
             locale: document.getElementById('locale').value
         });
 
+        console.log('3. SDK Initialized with locale:', document.getElementById('locale').value);
+        console.log('4. Default Flow Initiation Mode:', document.getElementById('flow-initiation-mode').value);
+
         await updateKlarnaPresentation();
 
         // Add event listeners for settings
@@ -80,7 +84,7 @@ const initKlarnaPayment = async () => {
         });
 
         // Add event listeners for all settings inputs
-        const settingsInputs = document.querySelectorAll('#locale, #currency, #amount, input[name="requests"], #button-label, #button-shape, #button-theme, #button-logo-alignment, #button-id');
+        const settingsInputs = document.querySelectorAll('#locale, #currency, #amount, input[name="requests"], #button-label, #button-shape, #button-theme, #button-logo-alignment, #button-id, #flow-initiation-mode');
         settingsInputs.forEach(input => {
             if (input.type === 'checkbox') {
                 input.addEventListener('change', updateKlarnaPresentation);
@@ -129,8 +133,16 @@ const updateKlarnaPresentation = async () => {
 
         const paymentPresentation = await klarnaInstance.Payment.presentation(settings);
         
-        // Log only the instruction value
-        console.info('PaymentPresentationInstruction:', paymentPresentation.instruction);
+        // Log the full paymentPresentation object
+        console.info('=== KLARNA SDK RESPONSE START ===');
+        console.info('Complete Klarna Payment Presentation Response:', paymentPresentation);
+        
+        // Log specific parts of the response for easier debugging
+        console.info('Instruction:', paymentPresentation.instruction);
+        console.info('Icon Data:', paymentPresentation.icon);
+        console.info('Header Data:', paymentPresentation.header);
+        console.info('Subheader Data:', paymentPresentation.subheader);
+        console.info('=== KLARNA SDK RESPONSE END ===');
 
         // Update icon
         const iconImg = document.createElement('img');
@@ -175,9 +187,15 @@ const updatePaymentButton = async (paymentMethod) => {
         })
         .on("click", (button) => {
             console.log('Button clicked');
+            console.info('Initiating Klarna payment with:');
+            console.info('- Currency:', settings.currency);
+            console.info('- Amount:', settings.amount);
+            console.info('- Flow Initiation Mode:', settings.flowInitiationMode);
+            
             return klarnaInstance.Payment.initiate({
                 currency: settings.currency,
-                amount: settings.amount
+                amount: settings.amount,
+                flowInitiationMode: settings.flowInitiationMode
             });
         })
         .mount('#button-container');
