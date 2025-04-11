@@ -75,6 +75,14 @@
         .credit-card-button:active {
             background-color: #1557b0;
         }
+        
+        .help-text {
+            display: block;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body>
@@ -287,6 +295,21 @@
                         <input type="text" id="button-id" placeholder="Custom button ID">
                     </div>
                 </div>
+            </div>
+            <div class="settings-group">
+                <label>Flow Initiation Mode:</label>
+                <select id="flow-initiation-mode">
+                    <option value="DEVICE_BEST" selected>Device Best (Recommended)</option>
+                    <option value="ON_PAGE">On Page</option>
+                    <option value="POPUP">Popup</option>
+                    <option value="REDIRECT">Redirect</option>
+                </select>
+                <small class="help-text">
+                    DEVICE_BEST: Best for device (default) - Mobile: redirect, Desktop: popup/redirect fallback<br>
+                    ON_PAGE: Never leaves the page - Popup if possible, fullscreen iframe fallback<br>
+                    POPUP: Open popup without iframe fallback<br>
+                    REDIRECT: Only use redirect flow
+                </small>
             </div>
         </div>
     </div>

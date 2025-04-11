@@ -64,8 +64,8 @@ const initKlarnaPayment = async () => {
 
         console.log('2. Initializing Klarna SDK...');
         klarnaInstance = await KlarnaSDK({
-            clientId: "klarna_test_client_UWpTWTJoRjY5WWUjcipmaSlqTW5ScFFmeWFWa3JLNFosNzg1N2YyNzYtYmI0MC00OTMxLWExMTMtOTEyMDFhOGQ4OWU2LDEsd1BaQ3hyOFdxYVZDdWF4QVE0MzdCcTFDRE5pRE1FTm0yeUttbHNxVi9lcz0",
-            partnerAccountId: "krn:partner:global:account:test:LZ1ATBQJ",
+            clientId: "klarna_test_client_OCokWmxPU3lnS1d1eiNwRSpmTENQUFJEN0FwdXp2Q1IsMjJiOWM4MWYtN2QyMy00YTQ0LWJlMTgtYjUyNjg2ZjRlMDM1LDEsYlVqVnJKMDE4Z3k2SWp1VllFNHYzR3pmd0RhVFFvTUxlUXpveENKZi9MQT0",
+            partnerAccountId: "krn:partner:global:account:test:M9CMI5CS",
             locale: document.getElementById('locale').value
         });
 
