@@ -1066,7 +1066,6 @@
                     // Create payment options object according to Klarna API documentation
                     const paymentOptions = {
                         currency: currency,
-                        payment_amount: amount,
                         request_payment_transaction: {
                             amount: parseInt(amount, 10),
                             payment_transaction_reference: `demo-transaction-${Date.now()}`
@@ -1075,9 +1074,8 @@
                             payment_request_reference: `demo-payment-request-${Date.now()}`,
                             customer_interaction_config: {
                                 method: "HANDOVER",
-                                return_url: window.location.origin + "/confirmation.html?payment_success=true&amount=" + amount + "&reference=" + encodeURIComponent(`demo-transaction-${Date.now()}`),
-                                app_return_url: window.location.origin + "/confirmation.html?payment_success=true&amount=" + amount + "&reference=" + encodeURIComponent(`demo-transaction-${Date.now()}`) + "&app=true",
-                                cancel_url: window.location.origin + "/confirmation.html?payment_canceled=true"
+                                return_url: window.location.origin + "/confirmation.html?payref=" + encodeURIComponent(`demo-transaction-${Date.now()}`),
+                                app_return_url: "merchantapp://klarna"
                             }
                         }
                     };
