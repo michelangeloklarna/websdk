@@ -46,6 +46,7 @@ const getCurrentSettings = () => {
         amount: parseInt(document.getElementById('amount').value),
         request: getSelectedValues('requests'),
         flowInitiationMode: document.getElementById('flow-initiation-mode').value,
+        subheaderStyle: document.querySelector('input[name="subheader-style"]:checked').value,
         buttonConfig: {
             label: document.getElementById('button-label').value,
             shape: document.getElementById('button-shape').value,
@@ -84,9 +85,9 @@ const initKlarnaPayment = async () => {
         });
 
         // Add event listeners for all settings inputs
-        const settingsInputs = document.querySelectorAll('#locale, #currency, #amount, input[name="requests"], #button-label, #button-shape, #button-theme, #button-logo-alignment, #button-id, #flow-initiation-mode');
+        const settingsInputs = document.querySelectorAll('#locale, #currency, #amount, input[name="requests"], #button-label, #button-shape, #button-theme, #button-logo-alignment, #button-id, #flow-initiation-mode, input[name="subheader-style"]');
         settingsInputs.forEach(input => {
-            if (input.type === 'checkbox') {
+            if (input.type === 'checkbox' || input.type === 'radio') {
                 input.addEventListener('change', updateKlarnaPresentation);
             } else {
                 input.addEventListener('change', updateKlarnaPresentation);
@@ -137,6 +138,10 @@ const updateKlarnaPresentation = async () => {
         console.info('=== KLARNA SDK RESPONSE START ===');
         console.info('Complete Klarna Payment Presentation Response:', paymentPresentation);
         
+        // Log the raw JSON for easy copying
+        console.info('=== RAW JSON RESPONSE ===');
+        console.info(JSON.stringify(paymentPresentation, null, 2));
+        
         // Format the presentation data for better readability
         console.info('=== PRESENTATION DATA (FORMATTED) ===');
         console.info('Instruction:', paymentPresentation.instruction);
@@ -163,43 +168,63 @@ const updateKlarnaPresentation = async () => {
         
         console.info('=== KLARNA SDK RESPONSE END ===');
 
-        // Update icon
-        const iconImg = document.createElement('img');
-        iconImg.src = paymentPresentation.descriptor?.icon?.badge_image_url || paymentPresentation.icon?.imageUrl;
-        iconImg.alt = paymentPresentation.descriptor?.icon?.alt || paymentPresentation.icon?.alt || 'Klarna';
-        iconImg.className = 'payment-icon';
-        document.getElementById('icon-container').appendChild(iconImg);
-
-        // Update header and subheader if requested
-        if (settings.request.includes('HEADER') && paymentPresentation.descriptor?.header) {
-            // Create a header element instead of using component method
-            const headerEl = document.createElement('div');
-            headerEl.textContent = paymentPresentation.descriptor.header.text || 'Pay with Klarna';
-            document.getElementById('header-container').appendChild(headerEl);
-        } else if (settings.request.includes('HEADER') && paymentPresentation.header?.component) {
-            // Fallback to component method if available
-            paymentPresentation.header.component("header-container");
-        }
-
-        if (settings.request.includes('SUBHEADER') && paymentPresentation.descriptor?.subheader?.enriched) {
-            // Create a subheader element
-            const subheaderEl = document.createElement('div');
-            subheaderEl.textContent = paymentPresentation.descriptor.subheader.enriched.text || '';
-            
-            // Add learn more link if available
-            if (paymentPresentation.descriptor.subheader.enriched.link) {
-                const link = document.createElement('a');
-                link.href = paymentPresentation.descriptor.subheader.enriched.link.href;
-                link.textContent = paymentPresentation.descriptor.subheader.enriched.link.link_text || 'Learn more';
-                link.target = '_blank';
-                link.style.marginLeft = '4px';
-                subheaderEl.appendChild(link);
+        // Always display these elements if available, regardless of settings
+        if (paymentPresentation.descriptor) {
+            // Update icon - using badge image
+            if (paymentPresentation.descriptor.icon?.badge_image_url) {
+                const iconImg = document.createElement('img');
+                iconImg.src = paymentPresentation.descriptor.icon.badge_image_url;
+                iconImg.alt = paymentPresentation.descriptor.icon.alt || 'Klarna';
+                iconImg.className = 'payment-icon';
+                document.getElementById('icon-container').appendChild(iconImg);
             }
+
+            // Display header
+            if (paymentPresentation.descriptor.header?.text) {
+                const headerEl = document.createElement('div');
+                headerEl.textContent = paymentPresentation.descriptor.header.text;
+                headerEl.className = 'klarna-header';
+                document.getElementById('header-container').appendChild(headerEl);
+            }
+
+            // Get user's subheader style preference
+            const subheaderStyle = settings.subheaderStyle || 'enriched';
+            console.info('Using subheader style:', subheaderStyle);
             
-            document.getElementById('subheader-container').appendChild(subheaderEl);
-        } else if (settings.request.includes('SUBHEADER') && paymentPresentation.subheader?.enriched?.component) {
-            // Fallback to component method if available
-            paymentPresentation.subheader.enriched.component("subheader-container");
+            if (subheaderStyle === 'short' && paymentPresentation.descriptor.subheader?.short) {
+                // Display short subheader
+                const subheaderWrapper = document.createElement('div');
+                subheaderWrapper.className = 'klarna-subheader-wrapper';
+                
+                const subheaderText = document.createElement('span');
+                subheaderText.textContent = paymentPresentation.descriptor.subheader.short.text || '';
+                subheaderWrapper.appendChild(subheaderText);
+                
+                document.getElementById('subheader-container').appendChild(subheaderWrapper);
+            } 
+            else if (paymentPresentation.descriptor.subheader?.enriched) {
+                // Display enriched subheader with learn more link
+                const subheaderWrapper = document.createElement('div');
+                subheaderWrapper.className = 'klarna-subheader-wrapper';
+                
+                // Add the subheader text
+                const subheaderText = document.createElement('span');
+                subheaderText.textContent = paymentPresentation.descriptor.subheader.enriched.text || '';
+                subheaderWrapper.appendChild(subheaderText);
+                
+                // Add learn more link if available
+                if (paymentPresentation.descriptor.subheader.enriched.link) {
+                    const link = document.createElement('a');
+                    link.href = paymentPresentation.descriptor.subheader.enriched.link.href;
+                    link.textContent = paymentPresentation.descriptor.subheader.enriched.link.link_text || 'Learn more';
+                    link.target = '_blank';
+                    link.className = 'klarna-learn-more';
+                    link.style.marginLeft = '4px';
+                    subheaderWrapper.appendChild(link);
+                }
+                
+                document.getElementById('subheader-container').appendChild(subheaderWrapper);
+            }
         }
 
         // Update button if Klarna is selected
