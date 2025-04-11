@@ -137,25 +137,68 @@ const updateKlarnaPresentation = async () => {
         console.info('=== KLARNA SDK RESPONSE START ===');
         console.info('Complete Klarna Payment Presentation Response:', paymentPresentation);
         
-        // Log specific parts of the response for easier debugging
+        // Format the presentation data for better readability
+        console.info('=== PRESENTATION DATA (FORMATTED) ===');
         console.info('Instruction:', paymentPresentation.instruction);
-        console.info('Icon Data:', paymentPresentation.icon);
-        console.info('Header Data:', paymentPresentation.header);
-        console.info('Subheader Data:', paymentPresentation.subheader);
+        console.info('Payment Button:', paymentPresentation.payment_button?.text || 'Not available');
+        
+        if (paymentPresentation.descriptor) {
+            console.info('Header Text:', paymentPresentation.descriptor.header?.text || 'Not available');
+            console.info('Subheader (Short):', paymentPresentation.descriptor.subheader?.short?.text || 'Not available');
+            console.info('Subheader (Enriched):', paymentPresentation.descriptor.subheader?.enriched?.text || 'Not available');
+            
+            if (paymentPresentation.descriptor.subheader?.enriched?.link) {
+                console.info('Learn More Link:', paymentPresentation.descriptor.subheader.enriched.link.href);
+            }
+            
+            if (paymentPresentation.descriptor.icon) {
+                console.info('Icon URLs Available:', 
+                    Object.keys(paymentPresentation.descriptor.icon)
+                    .filter(key => key.includes('_url'))
+                    .map(key => key.replace('_image_url', ''))
+                    .join(', ')
+                );
+            }
+        }
+        
         console.info('=== KLARNA SDK RESPONSE END ===');
 
         // Update icon
         const iconImg = document.createElement('img');
-        iconImg.src = paymentPresentation.icon.imageUrl;
-        iconImg.alt = paymentPresentation.icon.alt;
+        iconImg.src = paymentPresentation.descriptor?.icon?.badge_image_url || paymentPresentation.icon?.imageUrl;
+        iconImg.alt = paymentPresentation.descriptor?.icon?.alt || paymentPresentation.icon?.alt || 'Klarna';
         iconImg.className = 'payment-icon';
         document.getElementById('icon-container').appendChild(iconImg);
 
         // Update header and subheader if requested
-        if (settings.request.includes('HEADER')) {
+        if (settings.request.includes('HEADER') && paymentPresentation.descriptor?.header) {
+            // Create a header element instead of using component method
+            const headerEl = document.createElement('div');
+            headerEl.textContent = paymentPresentation.descriptor.header.text || 'Pay with Klarna';
+            document.getElementById('header-container').appendChild(headerEl);
+        } else if (settings.request.includes('HEADER') && paymentPresentation.header?.component) {
+            // Fallback to component method if available
             paymentPresentation.header.component("header-container");
         }
-        if (settings.request.includes('SUBHEADER')) {
+
+        if (settings.request.includes('SUBHEADER') && paymentPresentation.descriptor?.subheader?.enriched) {
+            // Create a subheader element
+            const subheaderEl = document.createElement('div');
+            subheaderEl.textContent = paymentPresentation.descriptor.subheader.enriched.text || '';
+            
+            // Add learn more link if available
+            if (paymentPresentation.descriptor.subheader.enriched.link) {
+                const link = document.createElement('a');
+                link.href = paymentPresentation.descriptor.subheader.enriched.link.href;
+                link.textContent = paymentPresentation.descriptor.subheader.enriched.link.link_text || 'Learn more';
+                link.target = '_blank';
+                link.style.marginLeft = '4px';
+                subheaderEl.appendChild(link);
+            }
+            
+            document.getElementById('subheader-container').appendChild(subheaderEl);
+        } else if (settings.request.includes('SUBHEADER') && paymentPresentation.subheader?.enriched?.component) {
+            // Fallback to component method if available
             paymentPresentation.subheader.enriched.component("subheader-container");
         }
 
@@ -175,30 +218,59 @@ const updatePaymentButton = async (paymentMethod) => {
 
     if (paymentMethod === 'klarna' && klarnaInstance) {
         const settings = getCurrentSettings();
-        const buttonConfig = {
-            ...settings.buttonConfig,
-            // Only include id if it's not empty
-            ...(settings.buttonConfig.id && { id: settings.buttonConfig.id })
-        };
         
-        klarnaInstance.Payment.button(buttonConfig)
-        .on("render", async (button) => {
-            console.log('Button rendered');
-        })
-        .on("click", (button) => {
-            console.log('Button clicked');
-            console.info('Initiating Klarna payment with:');
-            console.info('- Currency:', settings.currency);
-            console.info('- Amount:', settings.amount);
-            console.info('- Flow Initiation Mode:', settings.flowInitiationMode);
+        try {
+            // Get the current presentation response to access payment_button if needed
+            const presentation = await klarnaInstance.Payment.presentation(settings);
             
-            return klarnaInstance.Payment.initiate({
-                currency: settings.currency,
-                amount: settings.amount,
-                flowInitiationMode: settings.flowInitiationMode
+            const buttonConfig = {
+                ...settings.buttonConfig,
+                // Only include id if it's not empty
+                ...(settings.buttonConfig.id && { id: settings.buttonConfig.id }),
+                // Use the payment_button text if available
+                ...(presentation.payment_button?.text && { 
+                    text: presentation.payment_button.text 
+                })
+            };
+            
+            console.log('Creating button with config:', buttonConfig);
+            
+            // Try to use the button method from the SDK
+            klarnaInstance.Payment.button(buttonConfig)
+            .on("render", async (button) => {
+                console.log('Button rendered');
+            })
+            .on("click", (button) => {
+                console.log('Button clicked');
+                console.info('Initiating Klarna payment with:');
+                console.info('- Currency:', settings.currency);
+                console.info('- Amount:', settings.amount);
+                console.info('- Flow Initiation Mode:', settings.flowInitiationMode);
+                
+                return klarnaInstance.Payment.initiate({
+                    currency: settings.currency,
+                    amount: settings.amount,
+                    flowInitiationMode: settings.flowInitiationMode
+                });
+            })
+            .mount('#button-container');
+        } catch (error) {
+            console.error('Error creating Klarna button:', error);
+            
+            // Fallback to creating a custom button
+            const fallbackButton = document.createElement('button');
+            fallbackButton.className = 'custom-klarna-button';
+            fallbackButton.textContent = 'Pay with Klarna';
+            fallbackButton.addEventListener('click', () => {
+                console.log('Fallback Klarna button clicked');
+                klarnaInstance.Payment.initiate({
+                    currency: settings.currency,
+                    amount: settings.amount,
+                    flowInitiationMode: settings.flowInitiationMode
+                });
             });
-        })
-        .mount('#button-container');
+            buttonContainer.appendChild(fallbackButton);
+        }
     } else if (paymentMethod === 'credit-card') {
         const creditCardButton = document.createElement('button');
         creditCardButton.className = 'credit-card-button';
